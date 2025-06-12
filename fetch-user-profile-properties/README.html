@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8">
     <title>Fetch User Profile Properties From Site Collection And Export To CSV | PnP Samples </title>
-    <meta name="viewport" content="width=device-width">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta name="title" content="Fetch User Profile Properties From Site Collection And Export To CSV | PnP Samples ">
     <meta name="generator" content="docfx 2.56.7.0">
     <meta name="description" content="A sample gallery of scripts to manage all things Microsoft 365.">
@@ -18,6 +18,7 @@
     <meta property="og:image" content="https://pnp.github.io/script-samples/assets/social-media-screenshot.png">
     <meta property="og:image:alt" content="Screenshot example of the PnP Script Samples Site">
     <meta property="og:site_name" content="PnP Script Samples">
+    <meta name="msvalidate.01" content="04EFEDA66EC42C08A1247C979E2F9ADD">
     <meta property="og:description" content="A sample gallery of scripts to manage all things Microsoft 365.">
   
     <link rel="shortcut icon" href="https://c.s-microsoft.com/favicon.ico?v2">
@@ -47,8 +48,25 @@
         <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
           <div class="container">
              <div class="github-mark">
-              <a href="https://github.com/pnp/script-samples">
-                <img src="https://pnp.github.io/script-samples/assets/icons/github-light-64px.png" alt="GitHub Icon Image">
+              <a href="https://github.com/pnp/script-samples" title="Go to repository">
+               <div class="github-wrapper">
+                  <div class="github-icon">
+                    <img src="https://pnp.github.io/script-samples/assets/icons/github-light-64px.png" alt="GitHub Icon Image">
+                  </div>
+                  <div class="github-repository">
+                    <span>GitHub</span>
+                    <ul class="github-facts">
+                      <li>
+                        <i class="fa fa-code-fork" aria-hidden="true"></i>
+                        <span class="github-forks"></span>
+                      </li>
+                      <li>
+                        <i class="fa fa-star-o" aria-hidden="true"></i>
+                        <span class="github-stars"></span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
               </a>
             </div>
             <div class="navbar-header">
@@ -76,7 +94,7 @@
           <div class="col-md-12">
             <article class="content wrap" id="_content" data-uid="">
                   <div class="contribution-panel mobile-hide pull-right">
-                      <a href="https://github.com/pnp/script-samples/blob/main/scripts/fetch-user-profile-properties/README.md/#L1" title="Improve this Doc" class="improve-doc-lg"><i class="glyphicon glyphicon-pencil"></i></a>
+                      <a href="https://github.com/sympmarc/script-samples/blob/main/scripts/fetch-user-profile-properties/README.md/#L1" title="Improve this Doc" class="improve-doc-lg"><i class="glyphicon glyphicon-pencil"></i></a>
                   </div>
                     <h1 id="fetch-user-profile-properties-from-site-collection-and-export-to-csv">Fetch User Profile Properties From Site Collection And Export To CSV</h1>
 
@@ -100,11 +118,11 @@ Create a new file and write a script</p>
 <li role="presentation">
 <a href="#tabpanel_CeZOj-G++Q_pnpps" role="tab" aria-controls="tabpanel_CeZOj-G++Q_pnpps" data-tab="pnpps" tabindex="0" aria-selected="true">PnP PowerShell</a>
 </li>
+<li role="presentation">
+<a href="#tabpanel_CeZOj-G++Q_cli-m365-ps" role="tab" aria-controls="tabpanel_CeZOj-G++Q_cli-m365-ps" data-tab="cli-m365-ps" tabindex="-1">CLI for Microsoft 365</a>
+</li>
 </ul>
-<section id="tabpanel_CeZOj-G++Q_pnpps" role="tabpanel" data-tab="pnpps"><button class="article-clipboard" title="Copy to clipboard" data-toggle="tooltip" data-placement="top" data-clipboard-target="section[id^='tabpanel'][data-tab='pnpps'] pre">
-    <span class="glyphicon glyphicon-copy" aria-hidden="true"></span>
-    <span class="article-clipboard__message done">Copied</span>
-</button>
+<section id="tabpanel_CeZOj-G++Q_pnpps" role="tabpanel" data-tab="pnpps">
 
 <pre><code class="lang-powershell">
 $basePath = #base path where you want to save CSV file(&quot;D:\Chandani\...\&quot;)
@@ -127,7 +145,7 @@ Function Login() {
     Write-Host &quot;Connecting to Tenant Admin Site '$($adminSiteURL)'&quot; -f Yellow | Out-File $LogFile -Append -Force
   
     Connect-PnPOnline -Url $adminSiteURL -Credentials $Creds
-    Write-Host &quot;Connection Successfull&quot; -f Yellow | Out-File $LogFile -Append -Force
+    Write-Host &quot;Connection Successful&quot; -f Yellow | Out-File $LogFile -Append -Force
    
 }
 Function StartProcessing {
@@ -136,7 +154,7 @@ Function StartProcessing {
 }
 
 Function ConnectionToSite() {
-    $siteURL = Read-Host &quot;Please enter site collcetion URL&quot; 
+    $siteURL = Read-Host &quot;Please enter site collection URL&quot; 
   
     try {            
         Write-Host &quot;Connecting to Site '$($siteURL)'&quot; -f Yellow          
@@ -197,6 +215,104 @@ StartProcessing
 <div class="highlight-tool">
 <p>Check out the <strong>PnP PowerShell</strong> to learn more at: <a href="https://aka.ms/pnp/powershell">https://aka.ms/pnp/powershell</a></p>
 </div>
+<div class="highlight-tool">
+<p>The way you login into PnP PowerShell has changed please read <a href="https://github.com/pnp/powershell/discussions/4249">PnP Management Shell EntraID app is deleted : what should I do ?</a></p>
+</div>
+</section>
+<section id="tabpanel_CeZOj-G++Q_cli-m365-ps" role="tabpanel" data-tab="cli-m365-ps" aria-hidden="true" hidden="hidden">
+
+<pre><code class="lang-powershell"># Usage example:
+#   .\Fetch-User-Profile-Properties.ps1 -WebUrl &quot;https://contoso.sharepoint.com/sites/Intranet&quot;
+
+[CmdletBinding()]
+param (
+  [Parameter(Mandatory = $true, HelpMessage = &quot;Web url from which to retrieve the users, e.g. https://contoso.sharepoint.com/sites/Intranet&quot;)]
+  [string]$WebUrl
+)
+begin {
+  $m365Status = m365 status
+  if ($m365Status -match &quot;Logged Out&quot;) {
+    m365 login
+  }
+  Write-Host &quot;Connection Successful!&quot; -f Green 
+}
+process {
+  #variables
+  $basePath = &quot;D:\&quot; #base path where you want to save CSV file(&quot;D:\Scripts\Output\...&quot;)
+
+  $userDetailsArray = @()
+  $dateTime = &quot;{0:MM_dd_yy}_{0:HH_mm_ss}&quot; -f (Get-Date)
+  $csvPath = $basePath + &quot;userdetails-&quot; + $dateTime + &quot;.csv&quot;
+
+  Write-Host &quot;`nRetrieving users from web $WebUrl&quot; -ForegroundColor Cyan
+  Write-Progress -Activity &quot;Obtaining user details&quot; -Status &quot;Obtaining users&quot; -PercentComplete 0
+
+  $users = m365 spo user list --webUrl $WebUrl | ConvertFrom-Json
+  $usersWithMail = $users | Where-Object {$_.Email -ne &quot;&quot;}
+
+  if ($usersWithMail.GetType().Name -eq &quot;PSCustomObject&quot;){
+    Write-Host &quot;Only one user found. Obtaining details for this specific user&quot; -ForegroundColor Cyan
+    $userProfile = m365 spo userprofile get --userName $usersWithMail.Email | ConvertFrom-Json
+
+    if ($userProfile.Email) {
+      $userProfileProperties = $userProfile.UserProfileProperties | ConvertFrom-Json
+
+      $userDetailsArray += New-Object PSObject -Property ([ordered]@{                   
+        Id            = $counter
+        GUID          = ($userProfileProperties | Where-Object {$_.Key -eq 'UserProfile_GUID'}).Value
+        FirstName     = ($userProfileProperties | Where-Object {$_.Key -eq 'FirstName'}).Value
+        LastName      = ($userProfileProperties | Where-Object {$_.Key -eq 'LastName'}).Value
+        WorkEmail     = ($userProfileProperties | Where-Object {$_.Key -eq 'WorkEmail'}).Value 
+        PictureURL    = ($userProfileProperties | Where-Object {$_.Key -eq 'PictureURL'}).Value    
+        Department    = ($userProfileProperties | Where-Object {$_.Key -eq 'Department'}).Value
+        PreferredName = ($userProfileProperties | Where-Object {$_.Key -eq 'PreferredName'}).Value
+      })
+    } else {
+      Write-Host &quot;Details for user with mail $userMail could not be found! Possible causes are that the email address is linked to an external user or group email address.&quot; -ForegroundColor Red
+    }
+      
+  } else {
+    $usersCount = $usersWithMail.Count
+    Write-Host &quot;Users retrieved. Amount of users to process: $usersCount&quot; -ForegroundColor Cyan
+
+    for ($counter = 1; $counter -le $usersCount; $counter++ ) {    
+      $userMail = $usersWithMail[$counter - 1].Email
+
+      $userProfile = m365 spo userprofile get --userName $userMail | ConvertFrom-Json
+      if ($userProfile.Email) {
+        $userProfileProperties = $userProfile.UserProfileProperties | ConvertFrom-Json
+
+        $userDetailsArray += New-Object PSObject -Property ([ordered]@{                   
+          Id            = 1
+          GUID          = ($userProfileProperties | Where-Object {$_.Key -eq 'UserProfile_GUID'}).Value
+          FirstName     = ($userProfileProperties | Where-Object {$_.Key -eq 'FirstName'}).Value
+          LastName      = ($userProfileProperties | Where-Object {$_.Key -eq 'LastName'}).Value
+          WorkEmail     = ($userProfileProperties | Where-Object {$_.Key -eq 'WorkEmail'}).Value 
+          PictureURL    = ($userProfileProperties | Where-Object {$_.Key -eq 'PictureURL'}).Value    
+          Department    = ($userProfileProperties | Where-Object {$_.Key -eq 'Department'}).Value
+          PreferredName = ($userProfileProperties | Where-Object {$_.Key -eq 'PreferredName'}).Value
+        })
+      } else {
+        Write-Host &quot;Details for user with mail $userMail could not be found! Possible causes are that the email address is linked to an external user or group email address.&quot; -ForegroundColor Red
+      }
+    
+      Write-Progress -Activity &quot;Obtaining user details&quot; -Status &quot;$counter/$usersCount users obtained, currently processing $userMail&quot; -PercentComplete (($counter / $usersWithMail.Count) * 100)
+    }
+  }
+  
+  Write-Host &quot;Exporting to CSV...&quot;  -ForegroundColor Cyan
+  $userDetailsArray | Export-Csv $csvPath -NoTypeInformation -Append
+  Write-Host &quot;Exported Successfully...&quot; -ForegroundColor Cyan
+
+  Write-Host &quot;Script Complete! :)&quot; -ForegroundColor Green
+}
+</code></pre>
+<div class="highlight-tool">
+<p>Check out the <strong>CLI for Microsoft 365</strong> to learn more at: <a href="https://aka.ms/cli-m365">https://aka.ms/cli-m365</a></p>
+</div>
+<div class="highlight-tool-red">
+<p>Important changes coming to the way you login into CLI for Microsoft 365 (effective 9th September 2024) see <a href="https://pnp.github.io/blog/post/changes-pnp-management-shell-registration/">Changes in PnP Management Shell registration in Microsoft 365</a></p>
+</div>
 </section>
 </div>
 <h2 id="source-credit">Source Credit</h2>
@@ -212,11 +328,14 @@ StartProcessing
 <tr>
 <td>Chandani Prajapati</td>
 </tr>
+<tr>
+<td>Mathijs Verbeeck</td>
+</tr>
 </tbody>
 </table>
 <h2 id="disclaimer">Disclaimer</h2>
 <p><strong>THESE SAMPLES ARE PROVIDED <em>AS IS</em> WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.</strong></p>
-<img src="https://telemetry.sharepointpnp.com/script-samples/scripts/template-script-submission" aria-hidden="true">
+<img src="https://m365-visitor-stats.azurewebsites.net/script-samples/scripts/fetch-user-profile-properties" aria-hidden="true">
 </article>
           </div>
         </div>

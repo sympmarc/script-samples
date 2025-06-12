@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8">
     <title>Setup example site | PnP Samples </title>
-    <meta name="viewport" content="width=device-width">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta name="title" content="Setup example site | PnP Samples ">
     <meta name="generator" content="docfx 2.56.7.0">
     <meta name="description" content="A sample gallery of scripts to manage all things Microsoft 365.">
@@ -18,6 +18,7 @@
     <meta property="og:image" content="https://pnp.github.io/script-samples/assets/social-media-screenshot.png">
     <meta property="og:image:alt" content="Screenshot example of the PnP Script Samples Site">
     <meta property="og:site_name" content="PnP Script Samples">
+    <meta name="msvalidate.01" content="04EFEDA66EC42C08A1247C979E2F9ADD">
     <meta property="og:description" content="A sample gallery of scripts to manage all things Microsoft 365.">
   
     <link rel="shortcut icon" href="https://c.s-microsoft.com/favicon.ico?v2">
@@ -47,8 +48,25 @@
         <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
           <div class="container">
              <div class="github-mark">
-              <a href="https://github.com/pnp/script-samples">
-                <img src="https://pnp.github.io/script-samples/assets/icons/github-light-64px.png" alt="GitHub Icon Image">
+              <a href="https://github.com/pnp/script-samples" title="Go to repository">
+               <div class="github-wrapper">
+                  <div class="github-icon">
+                    <img src="https://pnp.github.io/script-samples/assets/icons/github-light-64px.png" alt="GitHub Icon Image">
+                  </div>
+                  <div class="github-repository">
+                    <span>GitHub</span>
+                    <ul class="github-facts">
+                      <li>
+                        <i class="fa fa-code-fork" aria-hidden="true"></i>
+                        <span class="github-forks"></span>
+                      </li>
+                      <li>
+                        <i class="fa fa-star-o" aria-hidden="true"></i>
+                        <span class="github-stars"></span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
               </a>
             </div>
             <div class="navbar-header">
@@ -76,7 +94,7 @@
           <div class="col-md-12">
             <article class="content wrap" id="_content" data-uid="">
                   <div class="contribution-panel mobile-hide pull-right">
-                      <a href="https://github.com/pnp/script-samples/blob/main/scripts/spo-setup-example-site/README.md/#L1" title="Improve this Doc" class="improve-doc-lg"><i class="glyphicon glyphicon-pencil"></i></a>
+                      <a href="https://github.com/sympmarc/script-samples/blob/main/scripts/spo-setup-example-site/README.md/#L1" title="Improve this Doc" class="improve-doc-lg"><i class="glyphicon glyphicon-pencil"></i></a>
                   </div>
                     <h1 id="setup-example-site">Setup example site</h1>
 
@@ -93,152 +111,168 @@
 <div class="tabGroup" id="tabgroup_CeZOj-G++Q">
 <ul role="tablist">
 <li role="presentation">
-<a href="#tabpanel_CeZOj-G++Q_cli-m365-ps" role="tab" aria-controls="tabpanel_CeZOj-G++Q_cli-m365-ps" data-tab="cli-m365-ps" tabindex="0" aria-selected="true">CLI for Microsoft 365 with PowerShell</a>
+<a href="#tabpanel_CeZOj-G++Q_pnpps" role="tab" aria-controls="tabpanel_CeZOj-G++Q_pnpps" data-tab="pnpps" tabindex="0" aria-selected="true">PnP PowerShell</a>
 </li>
 </ul>
-<section id="tabpanel_CeZOj-G++Q_cli-m365-ps" role="tabpanel" data-tab="cli-m365-ps"><button class="article-clipboard" title="Copy to clipboard" data-toggle="tooltip" data-placement="top" data-clipboard-target="section[id^='tabpanel'][data-tab='cli-m365-ps'] pre">
-    <span class="glyphicon glyphicon-copy" aria-hidden="true"></span>
-    <span class="article-clipboard__message done">Copied</span>
-</button>
+<section id="tabpanel_CeZOj-G++Q_pnpps" role="tabpanel" data-tab="pnpps">
 
-<pre><code class="lang-powershell">Write-host 'setup script example'
+<pre><code class="lang-powershell">###### Declare and Initialize Variables ######  
 
-Write-host 'ensure logged in'
-$m365Status = m365 status
-if ($m365Status -eq &quot;Logged Out&quot;) {
-  m365 login
-}
+Write-host 'setup script example'
+## Connect to SharePoint Online site  
+Connect-PnPOnline -Url $Url -Interactive
+
 
 Write-host 'create setup site'
-$siteRelativeUrl = 'sites/setupTestSite'
-$tenantUrl = 'https://contoso.sharepoint.com'
+$siteRelativeUrl = 'sites/setupTestSitePNP'
+$tenantUrl = 'https://&lt;tenant&gt;.sharepoint.com'
 $siteUrl = &quot;$tenantUrl/$siteRelativeUrl&quot;
-$siteTitle = 'setup test site'
+$siteTitle = 'setup test site PNP'
 $siteType = 'CommunicationSite'
-$site = m365 spo site get --url $siteUrl --output 'json'
-$site = $site | ConvertFrom-Json
+
+$site = Get-PnPTenantSite -Identity  $siteUrl
+
 if ($null -eq $site) {
   Write-host 'setup site does not exist, I will create it'
-  m365 spo site add --url $siteUrl --type $siteType --title $siteTitle
+  New-PnPSite -Type $siteType -Title $siteTitle -Url $siteUrl
 }
 else {
   Write-host 'setup site already exists'
 }
 
+## Disconnect the context  
+Disconnect-PnPOnline  
+## Connect to SharePoint Online site  
+Connect-PnPOnline -Url $siteUrl -Interactive
+
 Write-host 'add site column'
-$fieldName = 'Sample Text Column'
-$field = m365 spo field get --webUrl $siteUrl --fieldTitle $fieldName --output 'json'
+$fieldName = 'Sample Text Column PNP'
+$field = Get-PnPField -Identity $fieldName
 if ($null -eq $field) {
   Write-host 'sample site column does not exist, I will create it'
-  $fieldXml = &quot;&lt;Field ID='{13AFECC0-2454-41F3-85E6-E194458C861C}' Type='Text' Name='SampleTextColumn' DisplayName='Sample Text Column' Indexed='FALSE' Group='Sample Columns' Required='FALSE' SourceID='{4f118c69-66e0-497c-96ff-d7855ce0713d}' StaticName='SampleTextColumn' FromBaseType='TRUE' &gt;&lt;/Field&gt;&quot;
-  $field = m365 spo field add --webUrl $siteUrl --xml $fieldXml --output 'json'
+  $fieldXml = &quot;&lt;Field ID='{13AFECC0-2454-41F3-85E6-E194458C861C}' Type='Text' Name='SampleTextColumnPNP' DisplayName='Sample Text Column PNP' Indexed='FALSE' Group='Sample Columns PNP' Required='FALSE' SourceID='{4f118c69-66e0-497c-96ff-d7855ce0713d}' StaticName='SampleTextColumnPNP' FromBaseType='TRUE' &gt;&lt;/Field&gt;&quot;
+  $field = Add-PnPFieldFromXml -FieldXml $fieldXml 
 }
 else {
   Write-host 'sample site column already exists'
 }
-$field = $field | ConvertFrom-Json
 
 Write-host 'add site content type'
-$contentTypeName = 'sample content type'
-$contentTypeGroup = 'sample content type group'
+$contentTypeName = 'sample content type PNP'
+$contentTypeGroup = 'sample content type group PNP'
 $parentId = '0x01007926A45D687BA842B947286090B8F67D' # list item content type
-$contentType = m365 spo contenttype get --webUrl $siteUrl --id $parentId --output 'json'
+$contentType = Get-PnPContentType -Identity $contentTypeName
+
 if ($null -eq $contentType) {
   Write-host 'sample site content type does not exist, I will create it'
-  $contentType = m365 spo contenttype add --webUrl $siteUrl --name $contentTypeName --id $parentId --group $contentTypeGroup --output 'json'
-  $contentType = m365 spo contenttype get --webUrl $siteUrl --id $parentId --output 'json'
+  $ct = Get-PnPContentType -Identity Item
+  $contentType = Add-PnPContentType -Name $contentTypeName  -Group $contentTypeGroup -ParentContentType $ct 
+  $contentType = Get-PnPContentType -Identity $contentTypeName
+
 }
 else {
   Write-host 'sample site content type already exists'
 }
-$contentType = $contentType | ConvertFrom-Json
+
 
 Write-host 'add field to content type'
 $fieldId = $field.Id
 $contentTypeId = $contentType.StringId
-m365 spo contenttype field set --webUrl $siteUrl --contentTypeId $contentTypeId --fieldId $fieldId --required false
+Add-PnPFieldToContentType -Field $fieldId -ContentType $contentTypeId
 
 Write-host 'create generic list'
-$listName = 'setup test list'
-$list = m365 spo list get --title $listName --webUrl $siteUrl --output 'json'
+$listName = 'setup test list PNP'
+$list = Get-PnPList -Identity $listName
 if ($null -eq $list) {
   Write-host 'sample generic list does not exist, I will create it'
-  $list = m365 spo list add --title $listName --baseTemplate 'GenericList' --webUrl $siteUrl --output 'json'
+  $list = New-PnPList -Title $listName -Template GenericList
 }
 else {
   Write-host 'sample generic list already exists'
 }
-$list = $list | ConvertFrom-Json
 
 Write-host 'modify list settings to allow content types'
-m365 spo list set --webUrl $siteUrl --id $list.Id --contentTypesEnabled true
+Set-PnPList -Identity $list -EnableContentTypes $true
+
 
 Write-host 'add content type to list'
-$contentTypeAddedToList = m365 spo list contenttype add --webUrl $siteUrl --listId $list.Id --contentTypeId $contentTypeId
+$contentTypeAddedToList = Add-PnPContentTypeToList -List $list -ContentType $contentTypeId -DefaultContentType
+
 
 Write-host 'make list hidden'
-m365 spo list set --webUrl $siteUrl --id $list.Id --hidden true
+Set-PnPList -Identity $list -Hidden $true
 
 Write-host 'create document lib'
-$libName = 'setup test lib'
-$lib = m365 spo list get --title $libName --webUrl $siteUrl --output 'json'
+$libName = 'setup test lib PNP'
+$lib = Get-PnPList -Identity $libName
+
 if ($null -eq $lib) {
   Write-host 'sample document lib does not exist, I will create it'
-  $lib = m365 spo list add --title $libName --baseTemplate 'DocumentLibrary' --webUrl $siteUrl --output 'json'
+  $lib = New-PnPList -Title $libName -Template DocumentLibrary
 }
 else {
   Write-host 'sample document lib already exists'
 }
-$lib = $lib | ConvertFrom-Json
+
 
 Write-host 'add sample column'
-$columnName = 'Sample Text Column'
-$column = m365 spo field get --webUrl $siteUrl --listUrl &quot;Lists/$libName&quot; --fieldTitle $columnName --output 'json'
+$columnName = 'Sample Text Column PNP'
+$column = Get-PnPField -List $libName -Identity $columnName
+
 if ($null -eq $column) {
   Write-host 'sample column in lib does not exist, I will create it'
-  $columnXml = &quot;&lt;Field ID='{AC827B0C-8B45-4B4F-927B-CDDC4FEEE79E}' Type='Text' Name='SampleTextColumn' DisplayName='Sample Text Column' Required='FALSE' SourceID='http://schemas.microsoft.com/sharepoint/v3' StaticName='SampleTextColumn' FromBaseType='TRUE' /&gt;&quot;
-  $column = m365 spo field add --webUrl $siteUrl --listTitle $libName --xml $columnXml --output 'json'
+  $columnXml = &quot;&lt;Field ID='{AC827B0C-8B45-4B4F-927B-CDDC4FEEE79E}' Type='Text' Name='SampleTextColumnPNP' DisplayName='Sample Text Column PNP' Required='FALSE' SourceID='http://schemas.microsoft.com/sharepoint/v3' StaticName='SampleTextColumnPNP' FromBaseType='TRUE' /&gt;&quot;
+  $column = Add-PnPFieldFromXml -List $libName -FieldXml $columnXml
+  
 }
 else {
   Write-host 'sample column in lib already exists'
 }
-$column = $column | ConvertFrom-Json
+
 
 Write-host 'add sample folder'
-$folderName = 'sample Folder'
-$folder = m365 spo folder get --webUrl $siteUrl --folderUrl &quot;/$libName/$folderName&quot; --output 'json'
+$folderName = 'sample Folder PNP'
+$folder = Get-PnPFolder -List $libName 
+
 if ($null -eq $folder) {
   Write-host 'sample folder in lib does not exist, I will create it'
-  $folder = m365 spo folder add --webUrl $siteUrl --parentFolderUrl &quot;/$libName&quot; --name $folderName --output 'json'
+  $folder = Add-PnPFolder -Name $folderName -Folder $libName
+  
 }
 else {
   Write-host 'sample folder in lib already exists'
 }
 
 Write-host 'modify list view'
-$views = m365 spo list view list --webUrl $siteUrl --listTitle $libName --output 'json'
-$views = $views | ConvertFrom-Json
+$views = Get-PnPView -List $list
+
 $viewName = $views[0].Title # all items view
-m365 spo list view field add --webUrl $siteUrl --listTitle $libName --viewTitle $viewName --fieldTitle $columnName
+Set-PnPView -List $list -Identity $viewName -Fields $columnName
 
 Write-host 'modify site navigation'
-$currentNavigation = m365 spo navigation node list --webUrl $siteUrl --location QuickLaunch --output 'json'
-$currentNavigation = $currentNavigation | ConvertFrom-Json
+$currentNavigation = Get-PnPNavigationNode -Location QuickLaunch
+
 Write-host 'clearing old navigation links'
 foreach ($navigationItem in $currentNavigation) {
-  m365 spo navigation node remove --webUrl $siteUrl --location QuickLaunch --id $navigationItem.Id --confirm
+    Remove-PnPNavigationNode -identity $navigationItem.Id   -Location QuickLaunch -Force 
+  
 }
 Write-host 'adding new navigation'
-$nodeAddedResponse = m365 spo navigation node add --webUrl $siteUrl --location QuickLaunch --title 'Sample Document Library' --url &quot;/$siteRelativeUrl/$libName/Forms/AllItems.aspx&quot;
-$nodeAddedResponse = m365 spo navigation node add --webUrl $siteUrl --location QuickLaunch --title 'Hidden Sample List' --url &quot;/$siteRelativeUrl/Lists/$listName/AllItems.aspx&quot;
+$nodeAddedResponse = Add-PnPNavigationNode -Title &quot;Sample Document Library PNP&quot; -Url &quot;/$siteRelativeUrl/$libName/Forms/AllItems.aspx&quot; -Location &quot;QuickLaunch&quot;
+$nodeAddedResponse = Add-PnPNavigationNode -Title &quot;Hidden Sample List PNP&quot; -Url &quot;/$siteRelativeUrl/Lists/$listName/AllItems.aspx&quot; -Location &quot;QuickLaunch&quot;
+
+ 
+## Disconnect the context  
+Disconnect-PnPOnline  
 </code></pre>
 <div class="highlight-tool">
-<p>Check out the <strong>CLI for Microsoft 365</strong> to learn more at: <a href="https://aka.ms/cli-m365">https://aka.ms/cli-m365</a></p>
+<p>Check out the <strong>PnP PowerShell</strong> to learn more at: <a href="https://aka.ms/pnp/powershell">https://aka.ms/pnp/powershell</a></p>
+</div>
+<div class="highlight-tool">
+<p>The way you login into PnP PowerShell has changed please read <a href="https://github.com/pnp/powershell/discussions/4249">PnP Management Shell EntraID app is deleted : what should I do ?</a></p>
 </div>
 </section>
 </div>
-<h2 id="source-credit">Source Credit</h2>
-<p>Sample first appeared on <a href="https://pnp.github.io/cli-microsoft365/sample-scripts/spo/setup-example-site/">Setup example site | CLI for Microsoft 365</a></p>
 <h2 id="contributors">Contributors</h2>
 <table>
 <thead>
@@ -248,13 +282,13 @@ $nodeAddedResponse = m365 spo navigation node add --webUrl $siteUrl --location Q
 </thead>
 <tbody>
 <tr>
-<td>Adam Wójcik</td>
+<td>Valeras Narbutas</td>
 </tr>
 </tbody>
 </table>
 <h2 id="disclaimer">Disclaimer</h2>
 <p><strong>THESE SAMPLES ARE PROVIDED <em>AS IS</em> WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.</strong></p>
-<img src="https://telemetry.sharepointpnp.com/script-samples/scripts/spo-setup-example-site" aria-hidden="true">
+<img src="https://m365-visitor-stats.azurewebsites.net/script-samples/scripts/spo-setup-example-site" aria-hidden="true">
 </article>
           </div>
         </div>

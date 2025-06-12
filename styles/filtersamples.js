@@ -1,13 +1,8 @@
-// external js: isotope.pkgd.js
-
-/***
- * This is a generic isotope filter for samples
- */
-
 $(document).ready(function () {
   var filterText = $('#sample-listing').data("filter");
   var qsRegex;
   var buttonFilter;
+  var viewMode = $('#sample-listing').data("view") || 'grid'; // Default view mode
 
   // init Isotope
   var $grid = $('#sample-listing').isotope({
@@ -24,20 +19,16 @@ $(document).ready(function () {
       var buttonResult = buttonFilter ? $(this).is(buttonFilter) : true;
       return searchResult && buttonResult;
     },
-
-    fitRows:{
+    fitRows: {
       columnWidth: '.grid-sizer'
     }
-
   });
 
   // Display/hide a message when there are no results
   $grid.on('arrangeComplete', function (_event, filteredItems) {
     if (filteredItems.length > 0) {
-      // hide message 
       $("#noresults").hide();
     } else {
-      // show message; 
       $("#noresults").show();
     }
   });
@@ -58,15 +49,10 @@ $(document).ready(function () {
     });
 
     $.each(data, function (_u, sample) {
-
-      var item = loadSample(sample, filterText);
-
+      var item = loadSample(sample, filterText, viewMode);
       if (item !== null) {
-        $grid.append(item)
-          // add and lay out newly appended items
-          .isotope('appended', item);
+        $grid.append(item).isotope('appended', item);
       }
-
     });
 
     // Update the sort
@@ -89,17 +75,28 @@ $(document).ready(function () {
       filter.filter('.active').each(function () {
         filters.push($(this).data("filter"));
       });
-      //filters = filters.join(', ');    //OR
-      filters = filters.join('');         //AND
+
+      filters = filters.join('');
       buttonFilter = filters;
       $grid.isotope();
-
     });
   });
 
   search.on('change keyup paste', debounce(function () {
     qsRegex = new RegExp(search.val(), 'gi');
     $grid.isotope();
+
+    // Update the URL
+    var url = window.location.href;
+    var urlParts = url.split("?");
+    var searchVal = search.val();
+    var newUrl = urlParts[0];
+
+    if (searchVal.length > 0) {
+      newUrl = urlParts[0] + "?query=" + searchVal;
+    }
+
+    window.history.pushState({}, "", newUrl);
   }, 200));
 
   // debounce so filtering doesn't happen every millisecond
@@ -119,12 +116,13 @@ $(document).ready(function () {
 
   // See if there are any passed parameters
   try {
-    var urlParams = new URLSearchParams(window.location.search);
-    var query = urlParams.get('query');
-    if (query !== "") {
-      search.val(query).change();
-    }
-
+    $grid.one('arrangeComplete', function () {
+      var urlParams = new URLSearchParams(window.location.search);
+      var query = urlParams.get('query');
+      if (query !== "") {
+        search.val(query).change();
+      }
+    });
   } catch (error) {
     // Be vewy vewy quiet
   }
