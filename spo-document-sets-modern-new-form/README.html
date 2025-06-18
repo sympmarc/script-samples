@@ -106,6 +106,9 @@
 <li role="presentation">
 <a href="#tabpanel_CeZOj-G++Q_pnpps" role="tab" aria-controls="tabpanel_CeZOj-G++Q_pnpps" data-tab="pnpps" tabindex="0" aria-selected="true">PnP PowerShell</a>
 </li>
+<li role="presentation">
+<a href="#tabpanel_CeZOj-G++Q_pnpps2" role="tab" aria-controls="tabpanel_CeZOj-G++Q_pnpps2" data-tab="pnpps2" tabindex="-1">PnP PowerShell Alternative</a>
+</li>
 </ul>
 <section id="tabpanel_CeZOj-G++Q_pnpps" role="tabpanel" data-tab="pnpps">
 
@@ -144,6 +147,15 @@ Invoke-PnPQuery
 Write-Host -ForegroundColor Green &quot;All done&quot;
 
 </code></pre>
+<div class="highlight-tool">
+<p>Check out the <strong>PnP PowerShell</strong> to learn more at: <a href="https://aka.ms/pnp/powershell">https://aka.ms/pnp/powershell</a></p>
+</div>
+<div class="highlight-tool">
+<p>The way you login into PnP PowerShell has changed please read <a href="https://github.com/pnp/powershell/discussions/4249">PnP Management Shell EntraID app is deleted : what should I do ?</a></p>
+</div>
+</section>
+<section id="tabpanel_CeZOj-G++Q_pnpps2" role="tabpanel" data-tab="pnpps2" aria-hidden="true" hidden="hidden">
+
 <p>This alternate version, based on Dan's script above, works on the Content Type Hub, allowing you to modernize Document Sets stored at the enterprise level. See <a href="https://sympmarc.com/2025/06/12/modernizing-the-document-set-newdocset-form/">Modernizing the Document Set NewDocSet Form</a> for more details</p>
 <pre><code class="lang-powershell">$tenant = &quot;YourTenantName&quot;
 $clientId = &quot;YourAppRegistrationGUID&quot;
